@@ -10,6 +10,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "league/csv": "9.0",
+        "spatie/laravel-data": "^4.23",
         "spatie/laravel-query-builder": "^6.0",
         "vildanbina/laravel-model-json": "^2.5"
     },
