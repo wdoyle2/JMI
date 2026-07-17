@@ -17,6 +17,14 @@ class ExportReadingsRequest extends FormRequest
 		if (! $this->filled('format')) {
 			$this->merge(['format' => 'json']);
 		}
+
+		$anemometerFilter = $this->input('filter.anemometer');
+		if (is_string($anemometerFilter)) {
+			$filter = (array) $this->input('filter', []);
+			$filter['anemometer'] = $this->parseAnemometerIds($anemometerFilter);
+
+			$this->merge(['filter' => $filter]);
+		}
 	}
 
 	/**
@@ -27,33 +35,18 @@ class ExportReadingsRequest extends FormRequest
 		return [
 			'format' => ['required', Rule::in(['json', 'csv'])],
 			'filter' => ['sometimes', 'array'],
-			'filter.anemometer' => ['sometimes', 'string'],
+			'filter.anemometer' => ['sometimes', 'array', 'min:1'],
+			'filter.anemometer.*' => [
+				'required',
+				'uuid',
+				'distinct',
+				'exists:anemometers,id',
+			],
 			'filter.recorded_at_after' => ['sometimes', 'date'],
 			'filter.recorded_at_before' => ['sometimes', 'date'],
 			'tags_any' => ['sometimes', 'string'],
 			'tags_exact' => ['sometimes', 'string'],
 		];
-	}
-
-	public function withValidator($validator): void
-	{
-		$validator->after(function ($validator): void {
-			$raw = $this->input('filter.anemometer');
-			if ($raw === null || $raw === '') {
-				return;
-			}
-
-			foreach ($this->parseAnemometerIds((string) $raw) as $id) {
-				if (! preg_match('/^[0-9a-fA-F-]{36}$/', $id)) {
-					$validator->errors()->add(
-						'filter.anemometer',
-						'Each anemometer id must be a valid UUID.',
-					);
-
-					return;
-				}
-			}
-		});
 	}
 
 	public function exportFormat(): string
@@ -66,13 +59,7 @@ class ExportReadingsRequest extends FormRequest
 	 */
 	public function anemometerIds(): array
 	{
-		$raw = $this->input('filter.anemometer');
-
-		if ($raw === null || $raw === '') {
-			return [];
-		}
-
-		return $this->parseAnemometerIds((string) $raw);
+		return $this->input('filter.anemometer', []);
 	}
 
 	/**

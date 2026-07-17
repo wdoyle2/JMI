@@ -7,7 +7,6 @@ use App\Http\Requests\ExportReadingsRequest;
 use App\Models\Reading;
 use App\Services\Export\ExportResponseFactory;
 use App\Services\Export\ReadingExportQuery;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -35,16 +34,15 @@ class ReadingExportController extends Controller
 	 * @queryParam tags_any string Comma-separated tags (OR). Example: gusty,drafty
 	 * @queryParam tags_exact string Comma-separated tags (exact set). Example: gusty,drafty
 	 */
-	public function __invoke(ExportReadingsRequest $request): JsonResponse|StreamedResponse
+	public function __invoke(ExportReadingsRequest $request): StreamedResponse
 	{
-		$readings = $this->exportQuery
+		$rows = $this->exportQuery
 			->build($request, $request->anemometerIds())
 			->with(['tags', 'anemometer'])
-			->get();
-
-		$rows = $readings->map(
-			fn (Reading $reading) => ReadingExportData::fromModel($reading),
-		);
+			->lazy(500)
+			->map(
+				fn (Reading $reading) => ReadingExportData::fromModel($reading),
+			);
 
 		return $this->exporter->make(
 			format: $request->exportFormat(),

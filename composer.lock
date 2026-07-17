@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4cf23b08485a46913eeb7e14c63b7f5",
+    "content-hash": "7f116103e9a922714dae5f71e561ad62",
     "packages": [
         {
             "name": "brick/math",
@@ -1761,29 +1761,42 @@
         },
         {
             "name": "league/csv",
-            "version": "9.0.0",
+            "version": "9.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/csv.git",
-                "reference": "60ea563773f1c50162a948c44901c93b9a0aee56"
+                "reference": "6582ace29ae09ba5b07049d40ea13eb19c8b5073"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/60ea563773f1c50162a948c44901c93b9a0aee56",
-                "reference": "60ea563773f1c50162a948c44901c93b9a0aee56",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/6582ace29ae09ba5b07049d40ea13eb19c8b5073",
+                "reference": "6582ace29ae09ba5b07049d40ea13eb19c8b5073",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*",
-                "php": ">=7.0.10"
+                "ext-filter": "*",
+                "php": "^8.1.2"
             },
             "require-dev": {
-                "ext-curl": "*",
-                "friendsofphp/php-cs-fixer": "^2.0",
-                "phpunit/phpunit": "^6.0"
+                "ext-dom": "*",
+                "ext-xdebug": "*",
+                "friendsofphp/php-cs-fixer": "^3.92.3",
+                "phpbench/phpbench": "^1.4.3",
+                "phpstan/phpstan": "^1.12.32",
+                "phpstan/phpstan-deprecation-rules": "^1.2.1",
+                "phpstan/phpstan-phpunit": "^1.4.2",
+                "phpstan/phpstan-strict-rules": "^1.6.2",
+                "phpunit/phpunit": "^10.5.16 || ^11.5.22 || ^12.5.4",
+                "symfony/var-dumper": "^6.4.8 || ^7.4.0 || ^8.0"
             },
             "suggest": {
-                "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters"
+                "ext-dom": "Required to use the XMLConverter and the HTMLConverter classes",
+                "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters",
+                "ext-mbstring": "Needed to ease transcoding CSV using mb stream filters",
+                "ext-mysqli": "Requiered to use the package with the MySQLi extension",
+                "ext-pdo": "Required to use the package with the PDO extension",
+                "ext-pgsql": "Requiered to use the package with the PgSQL extension",
+                "ext-sqlite3": "Required to use the package with the SQLite3 extension"
             },
             "type": "library",
             "extra": {
@@ -1811,22 +1824,31 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Csv data manipulation made easy in PHP",
-            "homepage": "http://csv.thephpleague.com",
+            "description": "CSV data manipulation made easy in PHP",
+            "homepage": "https://csv.thephpleague.com",
             "keywords": [
+                "convert",
                 "csv",
                 "export",
                 "filter",
                 "import",
                 "read",
+                "transform",
                 "write"
             ],
             "support": {
-                "forum": "https://groups.google.com/forum/#!forum/thephpleague",
+                "docs": "https://csv.thephpleague.com",
                 "issues": "https://github.com/thephpleague/csv/issues",
-                "source": "https://github.com/thephpleague/csv/tree/master"
+                "rss": "https://github.com/thephpleague/csv/releases.atom",
+                "source": "https://github.com/thephpleague/csv"
             },
-            "time": "2017-08-18T10:27:55+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-12-27T15:18:42+00:00"
         },
         {
             "name": "league/flysystem",
@@ -6477,71 +6499,6 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.4.0"
             },
             "time": "2025-12-02T11:56:42+00:00"
-        },
-        {
-            "name": "vildanbina/laravel-model-json",
-            "version": "v2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vildanbina/laravel-model-json.git",
-                "reference": "66cf260069d8d2b6bc8237fc533314b63461dab1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vildanbina/laravel-model-json/zipball/66cf260069d8d2b6bc8237fc533314b63461dab1",
-                "reference": "66cf260069d8d2b6bc8237fc533314b63461dab1",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1",
-                "spatie/laravel-package-tools": "^1.19"
-            },
-            "require-dev": {
-                "illuminate/console": "^11.0 || ^12.0",
-                "illuminate/database": "^11.0 || ^12.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Vildanbina\\ModelJson\\ModelJsonServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Vildanbina\\ModelJson\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vildan Bina",
-                    "email": "vildanbina@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Model JSON",
-            "homepage": "https://github.com/vildanbina/laravel-model-json",
-            "keywords": [
-                "json-export",
-                "laravel",
-                "model-export"
-            ],
-            "support": {
-                "issues": "https://github.com/vildanbina/laravel-model-json/issues",
-                "source": "https://github.com/vildanbina/laravel-model-json/tree/v2.5"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/vildanbina",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-12-16T12:07:39+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

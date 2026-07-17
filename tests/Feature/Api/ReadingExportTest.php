@@ -25,7 +25,8 @@ class ReadingExportTest extends TestCase
 		$response = $this->getJson('/api/readings/export?format=json');
 
 		$response->assertOk();
-		$response->assertHeader('content-disposition', 'attachment; filename="readings.json"');
+		$response->assertHeader('content-type', 'application/json; charset=UTF-8');
+		$response->assertHeader('content-disposition', 'attachment; filename=readings.json');
 		$response->assertJsonFragment([
 			'id' => $reading->id,
 			'speed' => 12.5,
@@ -143,10 +144,26 @@ class ReadingExportTest extends TestCase
 	{
 		$this->actingAsUser();
 
-		$response = $this->getJson('/api/readings/export?format=json&filter[anemometer]=not-a-uuid');
+		// The previous regex accepted this because it is 36 characters
+		// containing only characters from its hex-and-dash character class.
+		$response = $this->getJson(
+			'/api/readings/export?format=json&filter[anemometer]=' . str_repeat('-', 36),
+		);
 
 		$response->assertStatus(422);
-		$response->assertJsonValidationErrors(['filter.anemometer']);
+		$response->assertJsonValidationErrors(['filter.anemometer.0']);
+	}
+
+	public function test_rejects_anemometer_uuid_that_does_not_exist(): void
+	{
+		$this->actingAsUser();
+
+		$response = $this->getJson(
+			'/api/readings/export?format=json&filter[anemometer]=' . $this->uuidInvalid(),
+		);
+
+		$response->assertStatus(422);
+		$response->assertJsonValidationErrors(['filter.anemometer.0']);
 	}
 
 	public function test_rejects_invalid_format(): void

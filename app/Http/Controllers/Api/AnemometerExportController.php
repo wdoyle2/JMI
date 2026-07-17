@@ -6,7 +6,6 @@ use App\Data\AnemometerExportData;
 use App\Http\Requests\ExportAnemometersRequest;
 use App\Models\Anemometer;
 use App\Services\Export\ExportResponseFactory;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -32,7 +31,7 @@ class AnemometerExportController extends Controller
 	 * @queryParam format string required Format: `json` or `csv`. Example: json
 	 * @queryParam filter[name] string Partial name match. Example: North
 	 */
-	public function __invoke(ExportAnemometersRequest $request): JsonResponse|StreamedResponse
+	public function __invoke(ExportAnemometersRequest $request): StreamedResponse
 	{
 		$now = Carbon::now();
 		$dayAgo = $now->copy()->subDay();
@@ -55,16 +54,15 @@ class AnemometerExportController extends Controller
 			)
 			->addSelect('anemometers.*');
 
-		$anemometers = QueryBuilder::for($base)
+		$rows = QueryBuilder::for($base)
 			->allowedFilters([
 				AllowedFilter::partial('name'),
 			])
 			->orderBy('name')
-			->get();
-
-		$rows = $anemometers->map(
-			fn (Anemometer $anemometer) => AnemometerExportData::fromModel($anemometer),
-		);
+			->lazy(500)
+			->map(
+				fn (Anemometer $anemometer) => AnemometerExportData::fromModel($anemometer),
+			);
 
 		return $this->exporter->make(
 			format: $request->exportFormat(),

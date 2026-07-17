@@ -19,7 +19,9 @@ Both endpoints support JSON and CSV downloads, validated filters, consistent fil
 - **ReadingExportQuery** separates filtering from response handling, making it independently testable.
 - Both routes are inside `auth:sanctum`, preventing unauthenticated exports.
 
-Exports are not paginated: each download contains the complete filtered result set.
+Exports are not paginated: each download contains the complete filtered result set. The database
+queries are consumed lazily in 500-row chunks, and both JSON and CSV are streamed directly to the
+client, so server memory usage does not grow with the total export size.
 
 ## Exported data
 

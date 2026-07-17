@@ -9,10 +9,9 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "league/csv": "9.0",
+        "league/csv": "^9.27",
         "spatie/laravel-data": "^4.23",
-        "spatie/laravel-query-builder": "^6.0",
-        "vildanbina/laravel-model-json": "^2.5"
+        "spatie/laravel-query-builder": "^6.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

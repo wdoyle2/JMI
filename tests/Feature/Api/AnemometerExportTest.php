@@ -34,7 +34,8 @@ class AnemometerExportTest extends TestCase
 		$response = $this->getJson('/api/anemometers/export?format=json');
 
 		$response->assertOk();
-		$response->assertHeader('content-disposition', 'attachment; filename="anemometers.json"');
+		$response->assertHeader('content-type', 'application/json; charset=UTF-8');
+		$response->assertHeader('content-disposition', 'attachment; filename=anemometers.json');
 
 		$row = collect($response->json())->firstWhere('id', $anemometer->id);
 		$this->assertNotNull($row);
