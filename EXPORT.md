@@ -70,17 +70,7 @@ Reading filters support:
 
 ## Authentication
 
-Obtain a Sanctum token:
-
-```bash
-BASE_URL="http://localhost:8000"
-
-TOKEN=$(curl --silent \
-  --request POST \
-  --header "Content-Type: application/json" \
-  --data '{"username":"admin","password":"admin"}' \
-  "$BASE_URL/api/auth-token" | jq --raw-output '.token')
-```
+Obtain a Sanctum token
 
 All export requests require:
 
