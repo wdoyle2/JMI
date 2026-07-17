@@ -10,6 +10,10 @@
 5. [Deliverables](#deliverables)
 6. [The application](#the-application)
 7. [Getting started](#getting-started)
+   - [Prerequisites by OS](#1-prerequisites-by-os)
+   - [Install project dependencies](#2-install-project-dependencies)
+   - [Boot the app](#3-boot-the-app)
+   - [Tasks](#tasks)
 
 # Overview
 
@@ -112,21 +116,94 @@ The currently implemented features:
 
 # Getting started
 
-## Installing dependencies
+You're going to need **Docker** to run this project. The stack is orchestrated with [Laravel Sail](https://laravel.com/docs/11.x/sail) (PHP, MySQL 8, Redis). You do **not** need PHP or Composer installed on your host — `install-deps` runs those inside a one-shot container.
 
-You're going to need [Docker](https://www.docker.com/) to run this project. The stack is orchestrated with [Laravel Sail](https://laravel.com/docs/11.x/sail).
+We recommend [go-task](https://taskfile.dev/docs/installation) to run the project's tasks. If you'd rather not install it, open `taskfile.yml` and run the underlying commands yourself.
 
-We recommend you install [go-task](https://taskfile.dev/installation/) to run the project's tasks — if you'd rather not, take a look at `taskfile.yml` and run the underlying commands yourself.
+> **Shell note:** `taskfile.yml` and Laravel Sail expect a Unix-like shell (`bash` / `sh`). That is the default on macOS and Linux. On Windows, use **WSL2** (recommended) or Git Bash — not plain PowerShell — for the commands below.
 
-The instructions below assume macOS. On Linux, replace the `brew` commands with your package manager.
+## 1. Prerequisites by OS
 
-At project root, run:
+### macOS
+
+1. Install [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) and start it.
+2. Install [go-task](https://taskfile.dev/docs/installation):
+
+```bash
+brew install go-task
+```
+
+### Linux
+
+1. Install Docker Engine ([docs](https://docs.docker.com/engine/install/)) **or** [Docker Desktop for Linux](https://docs.docker.com/desktop/setup/install/linux/). Ensure your user can run `docker` without `sudo` (typically by joining the `docker` group), then start the daemon.
+2. Install [go-task](https://taskfile.dev/docs/installation) — easiest with the install script:
+
+```bash
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Package-manager options (`apt`/`dnf`/`pacman`/`snap`, etc.) are listed on the [Task installation page](https://taskfile.dev/docs/installation).
+
+### Windows
+
+Laravel Sail on Windows is designed to run under **WSL2**. Native PowerShell alone will fight the shell scripts in this repo.
+
+1. Install WSL2 and a Linux distro (Ubuntu is fine). In an elevated PowerShell:
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+Restart if prompted, then finish the Ubuntu first-run user setup.
+
+2. Install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/). In Docker Desktop → **Settings**:
+   - **General**: enable **Use the WSL 2 based engine**
+   - **Resources → WSL Integration**: enable integration for your Ubuntu (or other) distro
+
+3. Open your **WSL** terminal (Ubuntu), not PowerShell, for the rest of setup.
+
+4. Install go-task **inside WSL**:
+
+```bash
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+5. Clone or copy the project into the **Linux filesystem** (e.g. `~/projects/...`), not under `/mnt/c/...`. Bind mounts from Windows drives are much slower and often cause Sail/Docker permission pain.
+
+```bash
+cd ~
+mkdir -p projects && cd projects
+git clone <your-fork-url> wind4life
+cd wind4life
+```
+
+If you already cloned on a Windows drive (`H:\`, `C:\`, etc.), re-clone inside WSL or move the tree into `~/projects`.
+
+## 2. Install project dependencies
+
+From the project root (macOS/Linux terminal, or WSL on Windows):
 
 ```bash
 task install-deps
 ```
 
-This installs composer dependencies (inside a one-shot Docker container, so you don't need PHP locally), creates `.env` from `.env.example`, and generates an `APP_KEY`.
+This will:
+
+- install Composer dependencies in a one-shot `laravelsail/php83-composer` container (no local PHP required),
+- create `.env` from `.env.example` if `.env` is missing,
+- generate `APP_KEY` if it is not already set.
+
+## 3. Boot the app
+
+```bash
+task init-app
+```
+
+That builds the Sail image, starts the stack, migrates, and seeds data. See [Initialize the app](#initialize-the-app) below for details and credentials.
 
 ## Tasks
 

@@ -14,7 +14,7 @@
   </p>
   <div class="alert alert-info" role="alert">
     <p class="mb-1"><strong>Admin account:</strong> username <code>admin</code>, password <code>admin</code>.</p>
-    <p class="mb-1">API docs at <a href="/api/docs">/api/docs</a> (if Scribe is installed).</p>
+    <p class="mb-1">API docs at <a href="/docs">/docs</a> (if Scribe is installed).</p>
     <p class="mb-0">Use <code>POST /api/auth-token</code> to obtain a Sanctum token.</p>
   </div>
   <p>

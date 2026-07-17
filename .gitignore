@@ -1,3 +1,4 @@
+/.phpunit.cache
 /node_modules
 /public/build
 /public/hot
@@ -8,16 +9,28 @@
 .env
 .env.backup
 .env.production
-.phpunit.cache
+.phpactor.json
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
-auth.json
 npm-debug.log
 yarn-error.log
+auth.json
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
-/.phpactor.json
+
+# Bootstrap package discovery / config cache (keep directory via nested .gitignore)
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Scribe intermediate extraction cache (regenerate with scribe:generate)
+/.scribe
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~

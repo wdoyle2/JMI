@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AnemometerController;
+use App\Http\Controllers\Api\AnemometerExportController;
 use App\Http\Controllers\Api\AnemometerReadingController;
 use App\Http\Controllers\Api\AuthTokenController;
 use App\Http\Controllers\Api\ReadingController;
+use App\Http\Controllers\Api\ReadingExportController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Intentionally omitted (parity with the `main` branch of the Django repo):
-|   - GET /api/readings/export  (Part-1 gap the candidate fills)
 |   - ?anemometer= filter on /api/readings
 |
 */
@@ -27,8 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('users/{username}', [UserController::class, 'show']);
 	Route::patch('users/{username}', [UserController::class, 'update']);
 
-	// anemometers (custom action registered BEFORE the resource so
-	// `/anemometers/recent-readings` isn't caught by the {id} wildcard).
+	// anemometers (custom actions registered BEFORE the resource so
+	// `/anemometers/export` and `/anemometers/recent-readings` aren't
+	// caught by the {id} wildcard).
+	Route::get('anemometers/export', AnemometerExportController::class);
 	Route::get('anemometers/recent-readings', [AnemometerController::class, 'recentReadings']);
 	Route::apiResource('anemometers', AnemometerController::class);
 
@@ -36,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('anemometers/{anemometer}/readings', [AnemometerReadingController::class, 'index']);
 	Route::get('anemometers/{anemometer}/readings/{reading}', [AnemometerReadingController::class, 'show']);
 
-	// readings (NO export route)
+	// readings
+	Route::get('readings/export', ReadingExportController::class);
 	Route::apiResource('readings', ReadingController::class);
 });

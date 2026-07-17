@@ -23,8 +23,8 @@ use Illuminate\Support\Facades\DB;
  * list+retrieve (read shape) while StoreReadingRequest / UpdateReadingRequest
  * accept the `anemometer` FK input (write shape: WriteReadingMinimalSerializer).
  *
- * Note: Django main has NO export action and NO `anemometer=` filter — neither
- * is implemented here (intentional Part-1 gap).
+ * Note: export lives on GET /api/readings/export (ReadingExportController).
+ * The list endpoint still has no `anemometer=` filter (separate gap).
  */
 class ReadingController extends Controller
 {
