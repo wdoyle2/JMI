@@ -1,7 +1,12 @@
 version: '3'
 
 vars:
-  SAIL: ./vendor/bin/sail
+  APP_SERVICE: laravel.test
+  # Sail is a bash script (macOS/Linux/WSL2). On native Windows, call Docker Compose directly —
+  # `bash` on PATH is often WSL1, which cannot see Docker Desktop.
+  COMPOSE: '{{if eq OS "windows"}}docker compose{{else}}./vendor/bin/sail{{end}}'
+  ARTISAN: '{{if eq OS "windows"}}docker compose exec -T laravel.test php artisan{{else}}./vendor/bin/sail artisan{{end}}'
+  PHP: '{{if eq OS "windows"}}docker compose exec -T laravel.test php{{else}}./vendor/bin/sail php{{end}}'
 
 tasks:
   install-deps:
@@ -31,62 +36,62 @@ tasks:
   build:
     desc: "Build the Sail app image."
     cmds:
-      - '{{.SAIL}} build'
+      - '{{.COMPOSE}} build'
 
   up:
     desc: "Ups the local compose stack."
     cmds:
-      - '{{.SAIL}} up {{.CLI_ARGS}}'
+      - '{{.COMPOSE}} up {{.CLI_ARGS}}'
 
   down:
     desc: "Downs the local compose stack."
     cmds:
-      - '{{.SAIL}} down'
+      - '{{.COMPOSE}} down'
 
   stop:
     desc: "Stops the local compose stack."
     cmds:
-      - '{{.SAIL}} stop'
+      - '{{.COMPOSE}} stop'
 
   logs:
     cmds:
-      - '{{.SAIL}} logs -f {{.CLI_ARGS}}'
+      - '{{.COMPOSE}} logs -f {{.CLI_ARGS}}'
 
   bash:
     cmds:
-      - '{{.SAIL}} shell'
+      - '{{if eq OS "windows"}}docker compose exec {{.APP_SERVICE}} bash{{else}}./vendor/bin/sail shell{{end}}'
 
   artisan:
     desc: "Run an artisan command. Usage: task artisan -- migrate"
     cmds:
-      - '{{.SAIL}} artisan {{.CLI_ARGS}}'
+      - '{{.ARTISAN}} {{.CLI_ARGS}}'
 
   manage:
     desc: "Alias for artisan, to mirror Django taskfile UX."
     cmds:
-      - '{{.SAIL}} artisan {{.CLI_ARGS}}'
+      - '{{.ARTISAN}} {{.CLI_ARGS}}'
 
   migrate:
     cmds:
-      - '{{.SAIL}} artisan migrate'
+      - '{{.ARTISAN}} migrate'
 
   reset-db:
     desc: "Wipes all tables and re-migrates."
     cmds:
-      - '{{.SAIL}} artisan migrate:fresh --force'
+      - '{{.ARTISAN}} migrate:fresh --force'
 
   create_anemometers:
     desc: >
       Create a batch of random anemometers bundled with readings.
       Usage: task create_anemometers -- num_anemometers num_readings_per_anemometer num_tags_per_reading
     cmds:
-      - '{{.SAIL}} artisan w4l:create-anemometers {{.CLI_ARGS}}'
+      - '{{.ARTISAN}} w4l:create-anemometers {{.CLI_ARGS}}'
 
   init-data:
     desc: "Resets DB, loads initial user, seeds 50 anemometers × 100 readings × 2 tags."
     cmds:
       - task: reset-db
-      - '{{.SAIL}} artisan db:seed --class=InitialUserSeeder --force'
+      - '{{.ARTISAN}} db:seed --class=InitialUserSeeder --force'
       - task: create_anemometers
         vars:
           CLI_ARGS: "50 100 2"
@@ -103,15 +108,15 @@ tasks:
   tests:
     desc: "Migrate the wind4life_testing DB, then run the PHPUnit suite against it."
     cmds:
-      - '{{.SAIL}} artisan migrate --env=testing --force'
-      - '{{.SAIL}} artisan test {{.CLI_ARGS}}'
+      - '{{.ARTISAN}} migrate --env=testing --force'
+      - '{{.ARTISAN}} test {{.CLI_ARGS}}'
 
   phpcs:
     desc: "Check code style — PSR-12 with tabs (matches jmi/apps/core)."
     cmds:
-      - '{{.SAIL}} php vendor/bin/phpcs --standard=phpcs.xml.dist app database routes tests {{.CLI_ARGS}}'
+      - '{{.PHP}} vendor/bin/phpcs --standard=phpcs.xml.dist app database routes tests {{.CLI_ARGS}}'
 
   phpcbf:
     desc: "Auto-fix code style — PSR-12 with tabs."
     cmds:
-      - '{{.SAIL}} php vendor/bin/phpcbf --standard=phpcs.xml.dist app database routes tests {{.CLI_ARGS}}'
+      - '{{.PHP}} vendor/bin/phpcbf --standard=phpcs.xml.dist app database routes tests {{.CLI_ARGS}}'
