@@ -14,7 +14,10 @@ tasks:
           -w /var/www/html \
           laravelsail/php83-composer:latest \
           composer install --ignore-platform-reqs --no-interaction --prefer-dist
-      - cp -n .env.example .env || true
+      - |
+        if [ ! -f .env ]; then
+          cp .env.example .env
+        fi
       - |
         if ! grep -q '^APP_KEY=base64:' .env; then
           docker run --rm \
@@ -24,7 +27,6 @@ tasks:
             laravelsail/php83-composer:latest \
             php artisan key:generate --force
         fi
-      - brew install go-task || true
 
   build:
     desc: "Build the Sail app image."
